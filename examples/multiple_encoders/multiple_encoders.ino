@@ -28,7 +28,9 @@ void setup() {
   encA.begin();
   encB.begin();
   encC.begin();
+  encC.flip();
   encD.begin();
+  encD.flip();
   Serial.begin(115200);
   while(!Serial);
 }

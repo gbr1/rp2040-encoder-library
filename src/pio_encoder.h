@@ -28,13 +28,15 @@ class PioEncoder{
         uint sm;
         PIO pio;
         int max_step_rate;
+        int flip_it;
     public:
         static uint offset;
         static bool not_first_instance;
         
-        PioEncoder(uint8_t _pin, PIO _pio = pio0, uint _sm = -1, int max_step_rate = 0);
+        PioEncoder(uint8_t _pin, PIO _pio = pio0, uint _sm = -1, int max_step_rate = 0, bool wflip=false);
         void begin();
         void reset();
+        void flip(const bool x=true);
         int getCount();
 };
 

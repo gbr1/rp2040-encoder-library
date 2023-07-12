@@ -20,11 +20,12 @@
 uint PioEncoder::offset;
 bool PioEncoder::not_first_instance;
 
-PioEncoder::PioEncoder(uint8_t _pin, PIO _pio, uint _sm, int max_step_rate){
+PioEncoder::PioEncoder(uint8_t _pin, PIO _pio, uint _sm, int max_step_rate, bool wflip){
     static uint offset;
     pin=_pin;
     pio = _pio;
     sm = _sm;
+    flip(wflip);
 }
 
 void PioEncoder::begin(){
@@ -43,6 +44,15 @@ void PioEncoder::reset(){
     quadrature_encoder_reset(pio, sm);
 }
 
+void PioEncoder::flip(const bool x){
+    if (x){
+        flip_it=-1;
+    }
+    else{
+        flip_it=1;
+    }
+}
+
 int PioEncoder::getCount(){
-    return quadrature_encoder_get_count(pio, sm);
+    return flip_it*quadrature_encoder_get_count(pio, sm);
 }
