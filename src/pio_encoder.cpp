@@ -20,11 +20,12 @@
 uint PioEncoder::offset;
 bool PioEncoder::not_first_instance;
 
-PioEncoder::PioEncoder(uint8_t _pin, PIO _pio, uint _sm, int max_step_rate, bool wflip){
+PioEncoder::PioEncoder(uint8_t _pin, PIO _pio, uint _sm, int _max_step_rate, bool wflip){
     static uint offset;
     pin=_pin;
     pio = _pio;
     sm = _sm;
+    max_step_rate = _max_step_rate;
     flip(wflip);
 }
 
