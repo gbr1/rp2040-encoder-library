@@ -21,6 +21,10 @@
 #include "Arduino.h"
 #include "quadrature.pio.h"
 
+#define COUNT_1X 2
+#define COUNT_2X 1
+#define COUNT_4X 0
+
 
 class PioEncoder{
     private:
@@ -29,15 +33,19 @@ class PioEncoder{
         PIO pio;
         int max_step_rate;
         int flip_it;
+        int zero_offset;
+        uint8_t count_mode;
     public:
         static uint offset;
         static bool not_first_instance;
         
-        PioEncoder(uint8_t _pin, PIO _pio = pio0, uint _sm = -1, int _max_step_rate = 0, bool wflip=false);
+        PioEncoder(const uint8_t pin, const bool flip = false, const int zero_offset = 0, const uint8_t count_mode = COUNT_4X,
+                   PIO pio = pio0, const uint sm = -1, const int max_step_rate = 0);
         void begin();
-        void reset();
+        void reset(const int reset_value = 0);
         void flip(const bool x=true);
         int getCount();
+        void setMode(const uint8_t mode = COUNT_4X);
 };
 
 

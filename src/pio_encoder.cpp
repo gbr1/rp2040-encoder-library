@@ -20,16 +20,21 @@
 uint PioEncoder::offset;
 bool PioEncoder::not_first_instance;
 
-PioEncoder::PioEncoder(uint8_t _pin, PIO _pio, uint _sm, int _max_step_rate, bool wflip){
+PioEncoder::PioEncoder(const uint8_t pin, const bool flip, const int zero_offset, const uint8_t count_mode, PIO pio, const uint sm, const int max_step_rate){
     static uint offset;
-    pin=_pin;
-    pio = _pio;
-    sm = _sm;
-    max_step_rate = _max_step_rate;
-    flip(wflip);
+    this->pin = pin;
+    this->pio = pio;
+    this->sm = sm;
+    this->max_step_rate = max_step_rate;
+    this->flip(flip);
+    this->zero_offset = zero_offset;
+    this->count_mode = count_mode;
 }
 
 void PioEncoder::begin(){
+    pinMode(pin, INPUT);
+    pinMode(pin+1, INPUT);
+
     if (!not_first_instance){
         offset = pio_add_program(pio, &quadrature_encoder_program);
     }
@@ -41,8 +46,9 @@ void PioEncoder::begin(){
     quadrature_encoder_program_init(pio,sm,offset,pin,max_step_rate);
 }
 
-void PioEncoder::reset(){
+void PioEncoder::reset(const int reset_value){
     quadrature_encoder_reset(pio, sm);
+    zero_offset=reset_value;
 }
 
 void PioEncoder::flip(const bool x){
@@ -54,6 +60,11 @@ void PioEncoder::flip(const bool x){
     }
 }
 
-int PioEncoder::getCount(){
-    return flip_it*quadrature_encoder_get_count(pio, sm);
+void PioEncoder::setMode(const uint8_t mode){
+    count_mode = mode;
 }
+
+int PioEncoder::getCount(){
+    return flip_it*(quadrature_encoder_get_count(pio, sm)>>count_mode)+zero_offset;
+}
+
